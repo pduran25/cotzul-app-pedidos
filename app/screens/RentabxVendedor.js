@@ -67,7 +67,7 @@ export default function RentabxVendedor() {
         setValTotB(totB);
         setValTotC(totC);
 
-        setRes3(totE/datap.length);
+        setRes3(totA/totB);
 
         totalesFinales(datap);
 

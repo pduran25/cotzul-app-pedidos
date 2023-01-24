@@ -62,8 +62,9 @@ export default function Rentabilidad() {
 
     const sumarTotales = (datap) =>{
         for (let x = 0; x < datap.length; x++) {
-            console.log("entro: "+datap[x].rt_subtotal);
+            console.log("entro: "+datap[x].rt_totaldesc);
             totA = totA + Number(datap[x].rt_subtotal);
+            console.log("sale: "+Number(datap[x].rt_subtotal));
             totB = totB + Number(datap[x].rt_totaldesc);
             totC = totC + Number(datap[x].rt_costoNK);
             totD = totD + Number(datap[x].rt_utilidadK);
@@ -73,13 +74,14 @@ export default function Rentabilidad() {
 
 
         }
+
         setValTotA(totA);
         setValTotB(totB);
         setValTotC(totC);
         setValTotD(totD);
 
         setRes3(totE);
-        setRes4(totF/datap.length);
+        setRes4(totB/totC);
 
         totalesFinales(datap);
 

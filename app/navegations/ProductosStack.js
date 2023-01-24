@@ -7,7 +7,10 @@ import Perfil from "../screens/Perfil";
 const Stack = createStackNavigator();
 export default function ProductosStack(){
     return(
-        <Stack.Navigator>
+        <Stack.Navigator 
+            screenOptions={{
+            headerShown: false
+          }}>
             <Stack.Screen 
             name="productos"
             component={Productos}

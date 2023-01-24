@@ -92,7 +92,7 @@ export default function Navigation(props){
                     <Tab.Screen 
                     name="rentable2" 
                     component={RentxVendStack}
-                    options={{title: "xVendedor"}}  />
+                    options={{title: "Rent. x vendedor"}}  />
                     <Tab.Screen 
                     name="perfil" 
                     component={PerfilStack}

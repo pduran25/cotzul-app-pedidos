@@ -5,7 +5,9 @@ import RentabxVendedor from "../screens/RentabxVendedor";
 const Stack = createStackNavigator();
 export default function RentxVendStack(){
     return(
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{
+            headerShown: false
+          }}>
             <Stack.Screen 
             name="rentabilidad"
             component={RentabxVendedor}
