@@ -280,19 +280,19 @@ export default function Productos(props){
            
             <TouchableOpacity onPress={viewDetails}>
             <View style={{flexDirection: 'row', backgroundColor: item.background, marginRight:15}}>
-                <View style={{width:35, height: 30, borderColor: 'black', borderWidth: 1}}>
+                <View style={{width:70, height: 30, borderColor: 'black', borderWidth: 1}}>
                     <Text style={styles.tabletext}>{item.cb_coddocumento}</Text>
                 </View>
-                <View style={{width:75, height: 30,  borderColor: 'black', borderWidth: 1}}>
+                <View style={{width:100, height: 30,  borderColor: 'black', borderWidth: 1}}>
                     <Text style={styles.tabletext}>{item.cb_cliente}</Text>
                 </View>
-                <View style={{width:75, height: 30,   borderColor: 'black', borderWidth: 1}}>
+                <View style={{width:100, height: 30,   borderColor: 'black', borderWidth: 1}}>
                     <Text style={styles.tabletext}>{item.cb_vendedor}</Text>
                 </View>
                 <View style={{width:60, height: 30,   borderColor: 'black', borderWidth: 1}}>
                     <Text style={styles.tableval}>$ {item.cb_valortotal}</Text>
                 </View>
-                <View style={{width:75, height: 30,   borderColor: 'black', borderWidth: 1}}>
+                <View style={{width:100, height: 30,   borderColor: 'black', borderWidth: 1}}>
                     <Text style={styles.tabletext}>{(item.cb_estado=='D')?'NO APROBADO':(item.cb_estado=='A')?'NUEVOS':(item.cb_estado=='B')?'BACKORDER':(item.cb_estado=='R')?'REACTIVADOS':'NINGUNO'}</Text>
                 </View>
             </View>
@@ -346,21 +346,22 @@ export default function Productos(props){
                     
                 ]}
             />
+             <ScrollView horizontal>
             <View style={{ marginHorizontal:20, marginTop:10, height: 120}}>
                 <View style={{flexDirection: 'row'}}>
-                    <View style={{width:35, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
+                    <View style={{width:70, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tabletitle}>#Doc.</Text>
                     </View>
-                    <View style={{width:75, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
+                    <View style={{width:100, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tabletitle}>Cliente</Text>
                     </View>
-                    <View style={{width:75, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
+                    <View style={{width:100, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tabletitle}>Vendedor</Text>
                     </View>
                     <View style={{width:60, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tabletitle}>Saldo</Text>
                     </View>
-                    <View style={{width:75, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
+                    <View style={{width:100, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tabletitle}>Estado</Text>
                     </View>
                 </View>
@@ -373,6 +374,7 @@ export default function Productos(props){
                       loading={loading && loading2}/>} 
                 
             </View>
+            </ScrollView>
             <View style={styles.titlesWrapper}>
                 <Text style={styles.titlesdetalle}>Cabecera de Pedidos</Text>
             </View>
@@ -437,6 +439,7 @@ titlespick2:{
 },
 btnContainerLogin:{
     marginTop: 10, 
+    marginBottom: 10, 
     width: "90%"
 },
 btnLogin:{
@@ -564,12 +567,14 @@ const pickerStyle = {
       },
     inputAndroid: {
         width: '85%',
-        height: 20,
+        height: 25,
         color: 'white',
         marginHorizontal: 20,
         paddingLeft:10,
+        marginTop: 5,
         backgroundColor: 'red',
         borderRadius: 5,
+
     },
     searchWrapper:{
         flexDirection: "row",

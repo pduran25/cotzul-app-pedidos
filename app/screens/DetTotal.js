@@ -651,12 +651,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         paddingHorizontal: 5,
+        fontSize: 12
     },
     tableval:{
         textAlign: 'center',
-        height: 30,
+        height: 40,
         paddingVertical: 7,
         paddingHorizontal: 5,
+        fontSize: 12
     },
     btnContainerLogin:{
         marginTop: 10, 
@@ -675,13 +677,13 @@ const styles = StyleSheet.create({
         height: 50
     }, 
     titlesSubtitle:{
-       // fontFamily: 
+        fontWeight: 'bold',
        fontSize: 16,
        color: colors.textDark,
     },
     titlesTitle:{
         // fontFamily: 
-       fontSize: 35,
+       fontSize: 20,
        color: colors.textDark,
     },
     scrollview:{
@@ -690,7 +692,8 @@ const styles = StyleSheet.create({
         zIndex: 0,
     },
     titlesdetalle:{
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize: 12
     },
     scrollview:{
         marginTop:10,

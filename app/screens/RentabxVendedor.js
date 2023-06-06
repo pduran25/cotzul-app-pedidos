@@ -308,7 +308,7 @@ const pickerStyle = {
       },
     inputAndroid: {
         width: '100%',
-        height: 20,
+        height: 30,
         color: 'white',
         paddingLeft:10,
         backgroundColor: 'red',
@@ -397,12 +397,12 @@ const pickerStyle = {
         }, 
         titlesSubtitle:{
            // fontFamily: 
-           fontSize: 16,
+           fontSize: 12,
            color: colors.textDark,
         },
         titlesTitle:{
             // fontFamily: 
-           fontSize: 35,
+           fontSize: 20,
            color: colors.textDark,
         },
         scrollview:{
@@ -461,21 +461,21 @@ const pickerStyle = {
           },
           tablevaltit:{
             textAlign: 'center',
-            height: 25,
+            height: 50,
             fontWeight: "bold",
             fontSize: 10,
             paddingHorizontal:5,
         },
         tablevaltit2:{
             textAlign: 'left',
-            height: 25,
-            fontSize: 10,
+            height: 50,
+            fontSize: 8,
             paddingHorizontal:5,
         },
         tableval:{
             textAlign: 'center',
-            height: 30,
-            fontSize: 12,
+            height: 40 ,
+            fontSize: 10,
             paddingVertical:5,
             paddingHorizontal: 5,
         },

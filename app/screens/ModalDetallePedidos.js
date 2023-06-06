@@ -346,6 +346,7 @@ tabletitle:{
   fontWeight: 'bold',
   textAlign: 'center',
   paddingHorizontal: 5,
+  fontSize: 12
 },
 tabletitle2:{
   fontWeight: 'bold',
@@ -355,8 +356,8 @@ tabletitle2:{
 },
 tableval:{
   textAlign: 'center',
-  height: 30,
-  fontSize: 10,
+  height: 40,
+  fontSize: 12,
   paddingVertical: 7,
   paddingHorizontal: 5,
 },

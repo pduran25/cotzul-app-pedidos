@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
         elevation: 5
       },
       button: {
-        width: 100,
+        width: 150,
         borderRadius: 20,
         padding: 10,
         elevation: 2
@@ -157,7 +157,8 @@ const styles = StyleSheet.create({
       textStyle: {
         color: "white",
         fontWeight: "bold",
-        textAlign: "center"
+        textAlign: "center",
+        fontSize: 12
       },
       modalText: {
         marginBottom: 15,
@@ -181,9 +182,10 @@ const styles = StyleSheet.create({
       },
       tableval:{
         textAlign: 'center',
-        height: 30,
+        height: 35,
         paddingVertical: 7,
         paddingHorizontal: 5,
+        fontSize:10
     },
     modalText: {
       marginBottom: 15,

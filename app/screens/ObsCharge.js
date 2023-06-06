@@ -20,10 +20,10 @@ export default function ObsCharge(props) {
                 <View style={{width:124, height: 30,  borderColor: 'black', borderWidth: 1}}>
                     <Text style={styles.tabletext}>{item.ob_obs}</Text>
                 </View>
-                <View style={{width:82, height: 30,   borderColor: 'black', borderWidth: 1}}>
+                <View style={{width:85, height: 30,   borderColor: 'black', borderWidth: 1}}>
                     <Text style={styles.tabletext}>{item.ob_usuario}</Text>
                 </View>
-                <View style={{width:82, height: 30,   borderColor: 'black', borderWidth: 1}}>
+                <View style={{width:80, height: 30,   borderColor: 'black', borderWidth: 1}}>
                     <Text style={styles.tabletext}>{item.ob_fecha}</Text>
                 </View>
             </View>
@@ -65,10 +65,10 @@ export default function ObsCharge(props) {
                     <View style={{width:124, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tabletitle}>Observacion</Text>
                     </View>
-                    <View style={{width:82, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
+                    <View style={{width:85, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tabletitle}>Usuario</Text>
                     </View>
-                    <View style={{width:82, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
+                    <View style={{width:80, backgroundColor:'#9c9c9c', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tabletitle}>Fecha</Text>
                     </View>
                 </View>
@@ -87,9 +87,9 @@ export default function ObsCharge(props) {
 const styles = StyleSheet.create({
 
     tabletitle:{
-        fontSize: 12,
+        fontSize: 10,
     },
     tabletext:{
-        fontSize: 12,
+        fontSize: 10,
     },
 })

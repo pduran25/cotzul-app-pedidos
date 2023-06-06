@@ -339,7 +339,7 @@ const pickerStyle = {
       },
     inputAndroid: {
         width: '100%',
-        height: 20,
+        height: 30,
         color: 'white',
         paddingLeft:10,
         backgroundColor: 'red',
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
       },
       title: {
-        fontSize: 20,
+        fontSize: 12,
         fontWeight: "bold",
       },
       text: {
@@ -404,12 +404,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         paddingHorizontal: 5,
     },
-    tableval:{
-        textAlign: 'center',
-        height: 30,
-        paddingVertical: 7,
-        paddingHorizontal: 5,
-    },
     btnContainerLogin:{
         marginTop: 10, 
         width: "90%",
@@ -428,12 +422,12 @@ const styles = StyleSheet.create({
     }, 
     titlesSubtitle:{
        // fontFamily: 
-       fontSize: 16,
+       fontSize: 12,
        color: colors.textDark,
     },
     titlesTitle:{
         // fontFamily: 
-       fontSize: 35,
+       fontSize: 20,
        color: colors.textDark,
     },
     scrollview:{
@@ -492,7 +486,7 @@ const styles = StyleSheet.create({
       },
       tablevaltit:{
         textAlign: 'center',
-        height: 25,
+        height: 60,
         fontWeight: "bold",
         fontSize: 10,
     },
@@ -505,7 +499,7 @@ const styles = StyleSheet.create({
     tableval:{
         textAlign: 'center',
         height: 30,
-        fontSize: 12,
+        fontSize: 10,
         paddingVertical:5,
         paddingHorizontal: 5,
     },

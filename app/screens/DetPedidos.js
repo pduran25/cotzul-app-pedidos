@@ -8,7 +8,7 @@ export default function DetPedidos(props) {
     return (
         <View> 
             <View style={styles.detallebody}> 
-                <Text style={{fontWeight:'bold'}}>Nombre Cliente:</Text>
+                <Text style={{fontWeight:'bold', fontSize:12}}>Nombre Cliente:</Text>
                 <Text style={styles.titlespick}>{registro.cb_cliente}</Text>
             </View>
             {/*<View style={{width:80, alignItems: 'left', paddingLeft: 10}}>
@@ -21,11 +21,11 @@ export default function DetPedidos(props) {
                     </View>*/ }
             <View style={styles.dividobody}> 
                     <View style={{width:80}}>
-                        <Text style={{fontWeight:'bold'}}>#Docum.</Text>
+                        <Text style={{fontWeight:'bold', fontSize:12}}>#Docum.</Text>
                         <Text style={styles.titlespick}>{registro.cb_coddocumento}</Text>
                     </View>
                     <View style={{width:270}}>
-                        <Text style={{fontWeight:'bold'}}>Vendedor</Text>
+                        <Text style={{fontWeight:'bold', fontSize:12}}>Vendedor</Text>
                         <Text style={styles.titlespick}>{registro.cb_vendedor}</Text>
                     </View>
                     
@@ -33,8 +33,8 @@ export default function DetPedidos(props) {
             <View style={styles.totalbody}> 
             
                     <View style={{width:'100%'}}>
-                        <Text style={{textAlign: 'right', paddingRight: 30,fontWeight:'bold'}}>Total($)</Text>
-                        <Text style={{textAlign: 'right', paddingRight: 30}}>{Number(registro.cb_valortotal).toFixed(2)}</Text>
+                        <Text style={{textAlign: 'right', paddingRight: 30,fontWeight:'bold', fontSize:12}}>Total($)</Text>
+                        <Text style={{textAlign: 'right', paddingRight: 30, fontSize:12}}>{Number(registro.cb_valortotal).toFixed(2)}</Text>
                     </View>
             </View>
            
@@ -68,7 +68,7 @@ titlesdetalle:{
     paddingTop: 10,
 },
 titlespick:{
-    fontSize: 12,
+    fontSize: 10,
     color: colors.textDark,
     paddingHorizontal:10,
     paddingTop: 10,
@@ -94,7 +94,6 @@ detallebody:{
 },
 dividobody:{
     flexDirection: "row",
-    paddingTop: 20,
     height: 65,
     width: '90%',
     marginHorizontal: 20,
@@ -105,7 +104,6 @@ totalbody:{
     height: 65,
     width: '90%',
     marginHorizontal: 20,
-    paddingTop: 20,
 },
 labelcorta:{
     marginTop: 10,

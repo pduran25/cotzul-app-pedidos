@@ -76,7 +76,7 @@ class ModalCheques extends Component {
 
       return(<View>
               <View style={{flexDirection: 'row'}}>
-                  <View style={{width:265, backgroundColor:'lightgray', borderColor: 'black', borderWidth: 1}}>
+                  <View style={{width:265, backgroundColor:'lightgray', borderColor: 'black', borderWidth: 1, height: 50}}>
                       <Text style={styles.tableval}>{item.dt_sri}-{item.dt_banco}</Text>
                   </View>
               </View>
@@ -163,10 +163,11 @@ const styles = StyleSheet.create({
     paddingBottom:10
   },
   modalView: {
-    margin: 20,
+    marginTop: 20,
+    marginBottom: 50,
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 35,
+    padding: 10,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -192,7 +193,8 @@ const styles = StyleSheet.create({
   textStyle: {
     color: "white",
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
+    fontSize: 10,
   },
   modalText:{
     fontWeight: 'bold',
@@ -223,6 +225,7 @@ tableval:{
   height: 30,
   paddingVertical:5,
   paddingHorizontal: 5,
+  fontSize: 10
 },
 tabletit:{
   textAlign: 'center',

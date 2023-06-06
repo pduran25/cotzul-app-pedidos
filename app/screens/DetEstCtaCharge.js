@@ -185,20 +185,21 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         paddingHorizontal: 5,
+        fontSize: 12,
     },
     tabletext:{
         fontSize: 12,
     },
     tablevalm:{
         textAlign: 'center',
-        fontSize: 12,
+        fontSize: 10,
         paddingVertical:5,
         paddingHorizontal: 5,
     },
     tableval:{
         textAlign: 'center',
         height: 30,
-        fontSize: 12,
+        fontSize: 10,
         paddingVertical:5,
         paddingHorizontal: 5,
     },
@@ -216,9 +217,9 @@ const styles = StyleSheet.create({
 },
 tablevaltit:{
     textAlign: 'center',
-    height: 25,
+    height: 35,
     fontWeight: "bold",
-    fontSize: 11,
+    fontSize: 10,
 },
 
 })

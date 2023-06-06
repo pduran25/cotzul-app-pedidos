@@ -193,16 +193,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: 10, 
         marginLeft: 30, 
-        marginRight: 30
+        marginRight: 30,
     },
-    titlesSubtitle:{
+    titlesTitle:{
         // fontFamily: 
-        fontSize: 16,
+        fontSize: 12,
         color: colors.textDark,
      },
     inputForm:{
         width: "100%",
-        marginTop: 10
+        marginTop: 10,
     },
     image:{
         height: 50,
@@ -211,11 +211,12 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     btnContainerLogin:{
-        marginTop: 30, 
-        width: "95%"
+        marginTop: 10, 
+        width: "95%",
+        
     },
     btnLogin:{
-        backgroundColor: "#6f4993",
+        backgroundColor: "#6f4994"
     }, 
     iconRight:{
         color : "#c1c1c1",
