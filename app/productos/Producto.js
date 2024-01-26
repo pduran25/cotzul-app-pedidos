@@ -9,6 +9,8 @@ import RNPickerSelect from "react-native-picker-select";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Table, TableWrapper, Row, Rows, Col  } from 'react-native-table-component';
 
+
+
 const screenWidth = Dimensions.get("window").width;
 const database_name = 'CotzulBD.db';
 const database_version = '1.0';

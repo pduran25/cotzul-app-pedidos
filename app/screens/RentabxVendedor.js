@@ -3,7 +3,7 @@ import { Input, Icon, Button} from 'react-native-elements';
 import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from 'react-native'
 import { colors, CheckBox } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
-import RNPickerSelect from "react-native-picker-select";
+import Picker from '@ouroboros/react-native-picker';
 
 export default function RentabxVendedor() {
     const [loading, setLoading] = useState(false);
@@ -31,6 +31,7 @@ export default function RentabxVendedor() {
     const [res3, setRes3] = useState(0);
 
     const [tmes, setTmes] = useState(-1);
+    let [picker, setPicker] = useState(0);
 
 
     const CargaDataRentabilidad = async () => {
@@ -91,13 +92,16 @@ export default function RentabxVendedor() {
         
     },[data]);
 
+    useEffect(()=>{
+        setTmes(picker);
+    },[picker])
+
 
     useEffect(()=>{
         console.log("busqueda de la rentabilidad");
         setLoading(false);
             if(tmes > 0){
                 CargaDataRentabilidad(tmes);
-                //setCarge(1);
             }
                
        },[tmes]);
@@ -109,9 +113,7 @@ export default function RentabxVendedor() {
         var month = new Date().getMonth() + 1;
         var year = new Date().getFullYear();
     
-        //Alert.alert(date + '-' + month + '-' + year);
-        // You can turn it in to your desired format
-        return date + '-' + month + '-' + year;//format: d-m-y;
+        return date + '-' + month + '-' + year;
     }
 
    const item =({item}) =>{
@@ -131,12 +133,6 @@ export default function RentabxVendedor() {
                     <View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tableval}>$ {Number(item.rv_utilidadK).toFixed(2)}</Text>
                     </View>
-                    {/*<View style={{width:165, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>{Number((item.rv_subtotal/valtotA)*100).toFixed(2)}%</Text>
-                    </View>
-                    <View style={{width:165, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>{Number((item.rv_utilidadK/valtotC)*100).toFixed(2)}%</Text>
-                    </View>*/}
                     <View style={{width:70, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tableval}>{Number((item.rv_subtotal/item.rv_costoNK)).toFixed(2)}</Text>
                     </View>
@@ -178,21 +174,20 @@ const item3 =({item}) =>{
             </View>
             <View style={styles.titlesWrapper}>
 
-            <RNPickerSelect
-                useNativeAndroidPickerStyle={false}
-                style={pickerStyle}
-                onValueChange={(tmes) => setTmes(tmes)}
-                placeholder={{ label: "SELECCIONAR", value: 0 }}
-                items={[
-                    { label: "DÍA CORRIENTE", value: 5},
-                    { label: "MES CORRIENTE", value: 6 },
-                    { label: "1 MES ATRÁS", value: 1},
-                    { label: "3 MESES ATRÁS", value: 2 },
-                    { label: "6 MESES ATRÁS", value: 3 },
-                    { label: "12 MESES ATRÁS", value: 4 },
-                    
-                ]}
-            />
+            <Picker
+              onChanged={setPicker}
+              options={[
+                  {value: 0, text: 'SELECCIONAR'},
+                  {value: 5, text: 'DÍA CORRIENTE'},
+                  {value: 6, text: 'MES CORRIENTE'},
+                  {value: 1, text: '1 MES ATRÁS'},
+                  {value: 2, text: '3 MESES ATRÁS'},
+                  {value: 3, text: '6 MESES ATRÁS'},
+                  {value: 4, text: '12 MESES ATRÁS'},
+              ]}
+              style={{borderWidth: 1, borderColor: '#a7a7a7', borderRadius: 5, marginBottom: 5, padding: 5, backgroundColor: "#6f4993", color: 'white', alignItems: 'center', marginHorizontal: 0}}
+              value={picker}
+                />            
             
              </View>
             
@@ -240,12 +235,6 @@ const item3 =({item}) =>{
                         <View style={{width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
                             <Text style={styles.tablevaltit}>C(UTI. NAC. KARDEX)</Text>
                         </View>
-                        {/*<View style={{width:165, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
-                            <Text style={styles.tablevaltit}>% A/T.A.</Text>
-                        </View>
-                        <View style={{width:165,height:35,  backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
-                            <Text style={styles.tablevaltit}>% C/T.C.</Text>
-                    </View>*/}
                         <View style={{width:70, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
                             <Text style={styles.tablevaltit}>% A/B</Text>
                         </View>                
@@ -273,12 +262,6 @@ const item3 =({item}) =>{
                     <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tableval}>$ {Number(valtotC).toFixed(2)}</Text>
                     </View>
-                   {/* <View style={{width:165, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>{Number(res1).toFixed(2)}</Text>
-                    </View>
-                    <View style={{width:165, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>{Number(res2).toFixed(2)}</Text>
-                    </View>*/}
                     <View style={{width:70, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tableval}>{Number(res3).toFixed(2)}</Text>
                     </View>

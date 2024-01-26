@@ -3,13 +3,62 @@ import { Input, Icon} from 'react-native-elements';
 import { StyleSheet, Text, View, ScrollView, ActivityIndicator, Modal, SafeAreaView, Button, Platform } from 'react-native'
 import { colors, CheckBox } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
-import RNPickerSelect from "react-native-picker-select";
+import Picker from '@ouroboros/react-native-picker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { style } from "deprecated-react-native-prop-types/DeprecatedImagePropType";
 
 
 export default function Rentabilidad() {
-    const [loading, setLoading] = useState(false);
+    const [cabecera, setCabecera] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [loading1, setLoading1] = useState(true);
     const [data, setData] = useState([])
+    const [data2, setData2] = useState([])
+    const [day1, setDay1] = useState(new Date())
+    const [day2, setDay2] = useState(new Date())
+
     const [carge, setCarge] = useState(0);
+    const [isDatePickerVisible1, setDatePickerVisibility1] = useState(false);
+    const [isDatePickerVisible2, setDatePickerVisibility2] = useState(false);
+
+    const showDatePicker1 = () => {
+        setDatePickerVisibility1(true);
+    };
+
+    const hideDatePicker1 = () => {
+        setDatePickerVisibility1(false);
+    };
+
+    const showDatePicker2 = () => {
+        setDatePickerVisibility2(true);
+    };
+
+    const hideDatePicker2 = () => {
+        setDatePickerVisibility2(false);
+    };
+
+    const handleConfirm1 = (date) => {
+       
+        hideDatePicker1();
+        setDay1(date);
+      };
+
+      const handleConfirm2 = (date) => {
+       
+        hideDatePicker2();
+        setDay2(date);
+      };
+
+      useEffect(() => {
+        console.log("Actual valor: "+day1)
+      }, [day1])
+
+      useEffect(() => {
+        console.log("Actual valor: "+day2)
+      }, [day2])
+      
+
+
     var totA = 0;
     var totB = 0;
     var totC = 0;
@@ -36,18 +85,35 @@ export default function Rentabilidad() {
     const [res4, setRes4] = useState(0);
 
     const [tmes, setTmes] = useState(-1);
+    let [picker, setPicker] = useState(0);
 
+      //CargaRentabilidad - Rentabilidad Vendedores
+    const CargaDataRentabilidadxVendedor = async () => {
+        try {
+            setLoading1(false);
+            const response = await fetch(
+               "http://app.cotzul.com/Pedidos/getRentaxVendedor2.php?fechaini="+formatDate(day1)+"&fechafin="+formatDate(day2)
+             );
+             console.log("http://app.cotzul.com/Pedidos/getRentaxVendedor2.php?fechaini="+formatDate(day1)+"&fechafin="+formatDate(day2));
+             const jsonResponse = await response.json();
+             setData2(jsonResponse?.rentaxvend);
+             console.log(jsonResponse?.rentaxvend);
+             
+             setLoading1(true);
+        } catch (error) {
+            setLoading1(false)
+          console.log("un error cachado Data saldopedIENTEEE");
+          console.log("ERROR CACHADO " + error);
+        }
+    };
 
-
-
-
-    const CargaDataRentabilidad = async (tmes) => {
+    const CargaDataRentabilidad = async () => {
         try {
             setLoading(false);
             const response = await fetch(
-               "http://app.cotzul.com/Pedidos/getRentabilidad.php?tmes="+tmes
+               "https://app.cotzul.com/Pedidos/getRentabilidad2.php?fechaini="+formatDate(day1)+"&fechafin="+formatDate(day2)
              );
-             console.log("http://app.cotzul.com/Pedidos/getRentabilidad.php??tmes="+tmes);
+             console.log("https://app.cotzul.com/Pedidos/getRentabilidad2.php?fechaini="+formatDate(day1)+"&fechafin="+formatDate(day2));
              const jsonResponse= await response.json();
              setData(jsonResponse?.rentabilidad);
              console.log(jsonResponse?.rentabilidad);
@@ -61,40 +127,69 @@ export default function Rentabilidad() {
     };
 
     const sumarTotales = (datap) =>{
-        for (let x = 0; x < datap.length; x++) {
-            console.log("entro: "+datap[x].rt_totaldesc);
-            totA = totA + Number(datap[x].rt_subtotal);
-            console.log("sale: "+Number(datap[x].rt_subtotal));
-            totB = totB + Number(datap[x].rt_totaldesc);
-            totC = totC + Number(datap[x].rt_costoNK);
-            totD = totD + Number(datap[x].rt_utilidadK);
+        if(picker == 1){
+            for (let x = 0; x < datap.length; x++) {
+                console.log("entro: "+datap[x].rt_totaldesc);
+                totA = totA + Number(datap[x].rt_subtotal);
+                console.log("sale: "+Number(datap[x].rt_subtotal));
+                totB = totB + Number(datap[x].rt_totaldesc);
+                totC = totC + Number(datap[x].rt_costoNK);
+                totD = totD + Number(datap[x].rt_utilidadK);
 
-            totE = totE + Number((datap[x].rt_subtotal/datap[x].rt_costoNK)*100);
-            totF = totF + Number((datap[x].rt_totaldesc/datap[x].rt_costoNK));
+                totE = totE + Number((datap[x].rt_subtotal/datap[x].rt_costoNK)*100);
+                totF = totF + Number((datap[x].rt_totaldesc/datap[x].rt_costoNK));
 
 
+            }
+
+            setValTotA(totA);
+            setValTotB(totB);
+            setValTotC(totC);
+            setValTotD(totD);
+
+            setRes3(totE);
+            setRes4(totB/totC);
+
+            totalesFinales(datap);
+        }else if(picker == 2){
+            for (let x = 0; x < datap.length; x++) {
+                console.log("entro: "+datap[x].rv_subtotal);
+                totA = totA + Number(datap[x].rv_subtotal);
+                totB = totB + Number(datap[x].rv_costoNK);
+                totC = totC + Number(datap[x].rv_utilidadK);
+    
+                totE = totE + Number((datap[x].rv_subtotal/datap[x].rv_costoNK));
+    
+    
+            }
+            setValTotA(totA);
+            setValTotB(totB);
+            setValTotC(totC);
+    
+            setRes3(totA/totB);
+    
+            totalesFinales(datap);
         }
-
-        setValTotA(totA);
-        setValTotB(totB);
-        setValTotC(totC);
-        setValTotD(totD);
-
-        setRes3(totE);
-        setRes4(totB/totC);
-
-        totalesFinales(datap);
 
 
     }
 
-    const totalesFinales = (datap) =>{  
-        for (let x = 0; x < datap.length; x++) {
-            totG = totG + Number((datap[x].rt_subtotal/valtotA)*100);
-            totH = totH + Number((datap[x].rt_utilidadK/valtotD)*100);
+    const totalesFinales = (datap) =>{ 
+        if(picker == 1) {
+            for (let x = 0; x < datap.length; x++) {
+                totG = totG + Number((datap[x].rt_subtotal/valtotA)*100);
+                totH = totH + Number((datap[x].rt_utilidadK/valtotD)*100);
+            }
+            setRes1(totG);
+            setRes2(totH);
+        }else if(picker == 2){
+            for (let x = 0; x < datap.length; x++) {
+                totG = totG + Number((datap[x].rv_subtotal/valtotA)*100);
+                totH = totH + Number((datap[x].rv_utilidadK/valtotC)*100);
+            }
+            setRes1(totG);
+            setRes2(totH);
         }
-        setRes1(totG);
-        setRes2(totH);
     }  
 
     useEffect(()=>{
@@ -104,16 +199,37 @@ export default function Rentabilidad() {
         }
     },[data]);
 
-
-   useEffect(()=>{
-    console.log("busqueda de la rentabilidad");
-    setLoading(false);
-        if(tmes > 0){
-            CargaDataRentabilidad(tmes);
-            //setCarge(1);
+    useEffect(()=>{
+        if(data2 != null){
+            if(data2.length>0)
+            sumarTotales(data2);
         }
-           
-   },[tmes]);
+        
+    },[data2]);
+
+    useEffect(() => {
+        setData([]);
+        setData2([]);
+        setValTotA(0);
+        setValTotB(0);
+        setValTotC(0);
+        setValTotD(0);
+        setRes1(0);
+        setRes2(0);
+        setRes3(0);
+        setRes4(0);
+    }, [picker])
+    
+
+    const formatDate = (date) => {
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Los meses comienzan desde 0, así que sumamos 1
+        const year = date.getFullYear();
+    
+        return `${day}-${month}-${year}`;
+      };
+
+
 
    const getCurrentDate=()=>{
  
@@ -130,13 +246,8 @@ export default function Rentabilidad() {
      return( 
          
          <View>
-
-          
+          {(picker == 1) ?
           <View style={{flexDirection: 'row'}}>
-               
-                   {/*<View style={{width:165, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>$ {Number(item.rt_subtotal).toFixed(2)}</Text>
-                    </View>*/}
                     <View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tableval}>$ {Number(item.rt_totaldesc).toFixed(2)}</Text>
                     </View>
@@ -146,19 +257,24 @@ export default function Rentabilidad() {
                     <View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tableval}>$ {Number(item.rt_utilidadK).toFixed(2)}</Text>
                     </View>
-                   {/* <View style={{width:165, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>{Number((item.rt_subtotal/valtotA)*100).toFixed(2)}%</Text>
-                    </View>
-                    <View style={{width:165, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>{Number((item.rt_utilidadK/valtotD)*100).toFixed(2)}%</Text>
-                    </View>
-                    <View style={{width:165, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>{Number((item.rt_subtotal/item.rt_costoNK)*100).toFixed(2)}</Text>
-                </View>*/}
                     <View style={{width:70, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tableval}>{Number((item.rt_totaldesc/item.rt_costoNK)).toFixed(2)}</Text>
                     </View>
-            </View>
+            </View>: (picker == 2)?  <View style={{flexDirection: 'row'}}>
+               
+               <View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}>$ {Number(item.rv_subtotal).toFixed(2)}</Text>
+               </View>
+               <View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}>$ {Number(item.rv_costoNK).toFixed(2)}</Text>
+               </View>
+               <View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}>$ {Number(item.rv_utilidadK).toFixed(2)}</Text>
+               </View>
+               <View style={{width:70, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}>{Number((item.rv_subtotal/item.rv_costoNK)).toFixed(2)}</Text>
+               </View>
+       </View>:<></>}
           
                     
             </View>
@@ -168,9 +284,14 @@ export default function Rentabilidad() {
 
  const item2 =({item}) =>{
     return( 
+       <>
+       {(picker == 1)? 
         <View style={{width:100, height:35, backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
                 <Text style={styles.tablevaltit2}>{item.rt_bodega} </Text>
-            </View>
+            </View>:(picker == 2)?<View style={{width:70, height:35, backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                <Text style={styles.tablevaltit2}>{item.rv_tipo} </Text>
+            </View>:<></>}
+            </>
            
         
     )
@@ -178,9 +299,14 @@ export default function Rentabilidad() {
 
 const item3 =({item}) =>{
     return( 
+        <>
+        {(picker == 1)? 
         <View style={{width:50, height:35, backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
                 <Text style={styles.tablevaltit}>{item.rt_mes} </Text>
-            </View>
+            </View>:(picker == 2)?<View style={{width:100, height:35, backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                <Text style={styles.tablevaltit2}>{item.rv_nombvendedor} </Text>
+            </View>:<></>}
+            </>
            
         
     )
@@ -190,30 +316,54 @@ const item3 =({item}) =>{
         <ScrollView style={styles.scrollview}>
             <View style={styles.titlesWrapper}>
                 <Text style={styles.titlesSubtitle}>Cotzul S.A.</Text>
-                <Text style={styles.titlesTitle}>Rentabilidad actual</Text>
+                <Text style={styles.titlesTitle}>Rentabilidad</Text>
                 <Text style={styles.titlesSubtitle}>Fecha Hoy: {getCurrentDate()}</Text>
                 <Text style={styles.titlesSubtitle}></Text>
             </View>
             <View style={styles.titlesWrapper}>
 
-            <RNPickerSelect
-                useNativeAndroidPickerStyle={false}
-                style={pickerStyle}
-                onValueChange={(tmes) => setTmes(tmes)}
-                placeholder={{ label: "SELECCIONAR", value: 0 }}
-                items={[
-                    { label: "DÍA CORRIENTE", value: 5},
-                    { label: "MES CORRIENTE", value: 6 },
-                    { label: "1 MES ATRÁS", value: 1},
-                    { label: "3 MESES ATRÁS", value: 2 },
-                    { label: "6 MESES ATRÁS", value: 3 },
-                    { label: "12 MESES ATRÁS", value: 4 },
-                    
-                ]}
+
+        <Picker
+              onChanged={setPicker}
+              options={[
+                  {value: 0, text: 'SELECCIONA TIPO RENTABILIDAD'},
+                  {value: 1, text: 'RENT. ACTUAL'},
+                  {value: 2, text: 'RENT. VENDEDOR'},
+                 /* {value: 3, text: 'RENT. X MARCA'},*/
+              ]}
+              style={{borderWidth: 1, borderColor: '#a7a7a7', borderRadius: 5, marginBottom: 5, padding: 5, backgroundColor: "#6f4993", color: 'white', alignItems: 'center', marginHorizontal: 0}}
+              value={picker}
+          />
+
+            <View style={styles.containerdate}>
+                <Button color={"#6f4993"} title={"Fecha Ini: "+ day1.toLocaleDateString()} onPress={showDatePicker1} />
+                <Button color={"#6f4993"} title={"Fecha Fin: "+ day2.toLocaleDateString()} onPress={showDatePicker2} />
+             </View>
+
+             <Button color={"#6f4993"} title={"BUSCAR RENTABILIDAD"} onPress={(picker == 1)?CargaDataRentabilidad:(picker == 2)?CargaDataRentabilidadxVendedor:null} />
+            <DateTimePickerModal
+                isVisible={isDatePickerVisible1}
+                mode="date"
+                date={day1}
+                color={"#6f4993"} 
+                onConfirm={handleConfirm1}
+                onCancel={hideDatePicker1}
             />
+
+        
+
+            <DateTimePickerModal
+                isVisible={isDatePickerVisible2}
+                mode="date"
+                date={day2}
+                onConfirm={handleConfirm2}
+                onCancel={hideDatePicker2}
+            />
+
+           
             
              </View>
-            
+            {(picker == 1)?
             <View style={{flexDirection: 'row'}}>
                 <View style={{borderColor: 'black', marginRight:-20, marginLeft:20,  marginTop:10}}>
                     <View style={{ width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
@@ -248,10 +398,6 @@ const item3 =({item}) =>{
             <ScrollView horizontal style={{ marginHorizontal:20, marginTop:10, marginBottom: 30}}>
                 <View>
                 <View style={{flexDirection: 'row'}}>
-                        
-                        {/*<View style={{width:165, height:35,  backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
-                            <Text style={styles.tablevaltit}>A(TOT - DESC)</Text>
-                        </View>*/}
                         <View style={{width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
                             <Text style={styles.tablevaltit}>B((A)+SEGURO)</Text>
                         </View>
@@ -261,15 +407,7 @@ const item3 =({item}) =>{
                         <View style={{width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
                             <Text style={styles.tablevaltit}>D(UT. KARDEX)</Text>
                         </View>
-                       {/* <View style={{width:165, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
-                            <Text style={styles.tablevaltit}>% A/T.A.</Text>
-                        </View>
-                        <View style={{width:165,height:35,  backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
-                            <Text style={styles.tablevaltit}>% D/T.D.</Text>
-                        </View>
-                        <View style={{width:165, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
-                            <Text style={styles.tablevaltit}>% A/C</Text>
-                        </View>*/}
+                      
                         <View style={{width:70, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
                             <Text style={styles.tablevaltit}>% B/C</Text>
                         </View>
@@ -289,9 +427,6 @@ const item3 =({item}) =>{
         
             <View style={{flexDirection: 'row'}}>
                     
-                    {/*<View style={{width:165, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>$ {Number(valtotA).toFixed(2)}</Text>
-                    </View>*/}
                     <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tableval}>$ {Number(valtotB).toFixed(2)}</Text>
                     </View>
@@ -301,15 +436,6 @@ const item3 =({item}) =>{
                     <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tableval}>$ {Number(valtotD).toFixed(2)}</Text>
                     </View>
-                   {/* <View style={{width:165, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>{Number(res1).toFixed(2)}</Text>
-                    </View>
-                    <View style={{width:165, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>{Number(res2).toFixed(2)}</Text>
-                    </View>
-                    <View style={{width:165, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
-                        <Text style={styles.tableval}>{Number(res3).toFixed(2)}</Text>
-                    </View>*/}
                     <View style={{width:70, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tableval}>{Number(res4).toFixed(2)}</Text>
                     </View>
@@ -318,7 +444,87 @@ const item3 =({item}) =>{
           </View>
           
             </ScrollView>
+            </View>: (picker == 2) ? <View style={{flexDirection: 'row'}}>
+                <View style={{borderColor: 'black', marginRight:-20, marginLeft:20,  marginTop:10}}>
+                    <View style={{ width:70, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tablevaltit}>TIPO</Text>
+                    </View>
+                   
+                    {loading1 ? (<FlatList 
+                    data={data2}
+                    renderItem = {item2}
+                    keyExtractor = {(item, index)=> index.toString()}
+                />) : <ActivityIndicator
+                      size="large" 
+                      loading={loading1}/>}
+                      
+                </View>
+                <View style={{borderColor: 'black', marginRight:-20, marginLeft:20,  marginTop:10}}>
+                    <View style={{ width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tablevaltit}>VENDEDOR</Text>
+                    </View>
+                   
+                    {loading1 ? (<FlatList 
+                    data={data2}
+                    renderItem = {item3}
+                    keyExtractor = {(item, index)=> index.toString()}
+                />) : <ActivityIndicator
+                      size="large" 
+                      loading={loading1}/>}
+                      
+                </View>
+           
+
+            <ScrollView horizontal style={{ marginHorizontal:20, marginTop:10, marginBottom: 30}}>
+                <View>
+                <View style={{flexDirection: 'row'}}>
+                        
+                        <View style={{width:100, height:35,  backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>A(TOT - DESC)</Text>
+                        </View>
+                        <View style={{width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>B(COST. NAC. KARDEX)</Text>
+                        </View>
+                        <View style={{width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>C(UTI. NAC. KARDEX)</Text>
+                        </View>
+                        <View style={{width:70, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>% A/B</Text>
+                        </View>                
             </View>
+            
+            {loading1 ? (<FlatList 
+                    data={data2}
+                    renderItem = {item}
+                    keyExtractor = {(item, index)=> index.toString()}
+                />) : <ActivityIndicator
+                      size="large" 
+                      loading={loading1}/>}
+
+
+
+        
+            <View style={{flexDirection: 'row'}}>
+                    
+                    <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>$ {Number(valtotA).toFixed(2)}</Text>
+                    </View>
+                    <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>$ {Number(valtotB).toFixed(2)}</Text>
+                    </View>
+                    <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>$ {Number(valtotC).toFixed(2)}</Text>
+                    </View>
+                    <View style={{width:70, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>{Number(res3).toFixed(2)}</Text>
+                    </View>
+
+                   
+          </View>
+          </View>
+          
+            </ScrollView>
+            </View>:<></>}
 
         </ScrollView>
     )
@@ -334,6 +540,7 @@ const pickerStyle = {
         borderRadius: 5,
         height: 30,
     },
+    
     placeholder: {
         color: 'white',
       },
@@ -359,7 +566,12 @@ const pickerStyle = {
     }}
 
 const styles = StyleSheet.create({
-
+    containerdate:{
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingBottom: 10,
+        marginHorizontal: 0
+    },
     container: {
         flex: 1,
         alignItems: "center",
@@ -427,7 +639,7 @@ const styles = StyleSheet.create({
     },
     titlesTitle:{
         // fontFamily: 
-       fontSize: 20,
+       fontSize: 25,
        color: colors.textDark,
     },
     scrollview:{

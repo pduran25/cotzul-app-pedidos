@@ -93,6 +93,7 @@ export default function DetTotal(props) {
     const [dataUser, setdataUser] = useState(defaultValueUser());
     const [usuario, setUsuario] = useState(false);
     const [descu, setDescu] = useState(0);
+    const [loadform, setLoadform] = useState(false);
     
 
     NetInfo.fetch().then(state => {
@@ -318,6 +319,7 @@ export default function DetTotal(props) {
             setSubTotal(subtot);
             setTotalProm(totprom);
             setSubTotalProm(subtotprom);
+            
 
 
             setTexto1(itemtext);
@@ -326,11 +328,14 @@ export default function DetTotal(props) {
     }
 
     useEffect(() => {
-        console.log("datap: " + datap.length);
-        if(datap.length > 0 && contData == 0){
-           
-            registroDetallesCadena(datap);
+        console.log("datap: " + datap);
+        if(datap != null){
+            if(datap.length > 0 && contData == 0){
+                registroDetallesCadena(datap);
+                setLoadform(true);
+            }
         }
+        
     }, [datap]);
 
 
@@ -486,16 +491,15 @@ export default function DetTotal(props) {
     gnventasa = ((gnordena/(Number(total)-Number(descu)))*100).toFixed(2);
     gngastosa = ((Number(total)-Number(descu))/Number(subtotalprom)).toFixed(2);
 
-    /*gnorden = Number(totorden/conttot).toFixed(2);
-    gnventas = Number(totventas/conttot).toFixed(2);
-    gngastos = Number(totcostos/conttot).toFixed(2);*/
+
 
     
 
     
     
     return (
-        <ScrollView style={styles.scrollview}>
+        (loadform) ? 
+            (<ScrollView style={styles.scrollview}>
             <View style={styles.titlesWrapper}>
                 <Text style={styles.titlesSubtitle}>Cotzul S.A.</Text>
                 <Text style={styles.titlesTitle}>Detalle del pedido</Text>
@@ -600,7 +604,10 @@ export default function DetTotal(props) {
                             <ModalAprobar gnorden={gnorden} gnventas={gnventas} gngastos={gngastos} valregistro={registro} usuario={dataUser.us_usuario} codusuario={dataUser.us_codusuario} cadenaint={texto1} regresarFn={regresarFn} ></ModalAprobar>
                     </View>
                 </View>
-        </ScrollView>
+        </ScrollView>) : (<View style={styles.containerLoad}>
+            <ActivityIndicator size="large" loading={loadform} />
+            <Text style={styles.centeredTextLoad}>Cargando Pedido ...</Text>
+          </View>)
     )
 }
 
@@ -613,6 +620,17 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
       },
+      containerLoad: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      centeredTextLoad: {
+        fontWeight: "bold",
+        fontSize: 16,
+        marginTop: 10,
+        textAlign: 'center',
+      },    
       title: {
         fontSize: 20,
         fontWeight: "bold",

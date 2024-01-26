@@ -10,6 +10,7 @@ import { AuthContext } from "../components/Context"
 import Productos from "../screens/Productos";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import ItemsStack from "./ItemsStack";
 
 
 
@@ -89,10 +90,15 @@ export default function Navigation(props){
                     name="rentable" 
                     component={RentableStack}
                     options={{title: "Rentabilidad"}}  />
-                    <Tab.Screen 
+                   {/*<Tab.Screen 
                     name="rentable2" 
                     component={RentxVendStack}
-                    options={{title: "Rent. x vendedor"}}  />
+            options={{title: "Rent. x vendedor"}}  />*/}
+                    <Tab.Screen 
+                    name="Precios" 
+                    component={ItemsStack}
+                    options={{headerShown: false}}
+                    />
                     <Tab.Screen 
                     name="perfil" 
                     component={PerfilStack}
@@ -119,6 +125,9 @@ function screenOptions(route, color){
         case "rentable2":
                     iconName = "chart-areaspline";
                     break;
+        case "Precios":
+                iconName = "format-list-bulleted";
+                break;
         default: 
             break;
     }

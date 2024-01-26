@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import RNPickerSelect from "react-native-picker-select";
 import DetPedidos from './DetPedidos';
 import { AuthContext } from "../components/Context"
+import Picker from '@ouroboros/react-native-picker';
 
 function defaultValueRegister(){
     return{
@@ -53,6 +54,8 @@ export default function Productos(props){
     const [consta, setConsta] = useState("");
     const [cadena, setCadena] = useState("");
     var cont = 0;
+    const inactiveTime = useRef(null);
+    let [picker, setPicker] = useState(-1);
 
     /* FUNCIONES RECURSIVAS */
     const getDataUser = async () => {
@@ -87,6 +90,10 @@ export default function Productos(props){
         }
     }
 
+    useEffect(()=>{
+        actualizaPedido(picker);
+    },[picker])
+
 
     const setCad = async (value) => {
         try {
@@ -104,36 +111,56 @@ export default function Productos(props){
         if(dataUser){
             if(!usuario){
                 getDataUser();
+                console.log("Carga de nuevo el pedido");
                 listarPedidos(-1);
-                
+                const subscription = AppState.addEventListener("change", nextAppState => {
+                    console.log("ingresando nueva");
+                    if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+                        console.log("aplicacion esta activa");
+        
+                      if (inactiveTime.current) {
+                        const elapsedTime = new Date() - inactiveTime.current;
+                        const inactiveMinutes = Math.floor(elapsedTime / 60000);
+                        
+                        if (inactiveMinutes >= 3) {
+                          // Han pasado 3 minutos de inactividad, realizar el deslogueo
+                          // Llama a la función de deslogueo aquí
+                            console.log("Pantalla inactiva");
+                            signOut();
+                            getCadenaDB();
+                        }
+                      }
+        
+                    } else {
+                        inactiveTime.current = new Date();
+                        console.log("aplicacion esta en el fondo:"+inactiveTime.current);
+                    }
+              
+                    appState.current = nextAppState;
+                   // setAppStateVisible(appState.current);
+                  /*  console.log("AppState", appState.current);
+                    if(appState.current == "inactive"){
+                       // actualizaPedido(-1);
+                        console.log("Pantalla inactiva");
+                        signOut();
+                        getCadenaDB();
+                    }*/
+                        
+                  });
+        
+        
+        
+                return () => {
+                    signOut();
+                    getCadenaDB();
+                    subscription.remove();
+                }
             }
         }
 
+       
 
-        const subscription = AppState.addEventListener("change", nextAppState => {
-            if (
-              appState.current.match(/inactive|background/) &&
-              nextAppState === "active"
-            ) {
-              console.log("aplicacion esta en el fondo");
-            }
-      
-            appState.current = nextAppState;
-            setAppStateVisible(appState.current);
-            console.log("AppState", appState.current);
-            if(appState.current == "inactive"){
-               // actualizaPedido(-1);
-                getCadenaDB();
-            }
-                
-          });
-
-
-
-        return () => {
-            getCadenaDB();
-            subscription.remove();
-        }
+        
         
     },[]);
 
@@ -152,15 +179,16 @@ export default function Productos(props){
           console.log("https://app.cotzul.com/Pedidos/getAllPedidosN.php?idestatus="+estatus+"&usuario="+dataUser.us_usuario+"&cadena="+cadena);
           const jsonResponse = await response.json();
           console.log("entro prueba item1");
-          setLoading(true);
+          
           
           setData(jsonResponse?.cabpedidos);
           cargarDetalles(jsonResponse?.cabpedidos);
 
-          if(estatus != -1)
-             listarDetPedidos();
-          else
-            setLoading2(true);
+          if(estatus != -1){
+            listarDetPedidos();
+          }else
+            setLoading(true);
+
           
         } catch (error) {
          setLoading(false)
@@ -195,16 +223,17 @@ export default function Productos(props){
 
     const listarDetPedidos = async () => {
         try {
+
+            console.log("entro a listar deta pedidos");
          
           const response2 = await fetch(
             "https://app.cotzul.com/Pedidos/getAllDetallesN.php?usuario="+dataUser.us_usuario
           );
-          console.log("https://app.cotzul.com/Pedidos/getAllDetallesN.php?usuario="+dataUser.us_usuario);
+          console.log("https://app.cotzul.com/Pedidos/getAllDetallesN.php?usuario=***"+dataUser.us_usuario);
           const jsonResponse2 = await response2.json();
           console.log(jsonResponse2?.detpedidos[0].dt_respuesta);
-          setLoading2(true);
+          setLoading(true);
         } catch (error) {
-          setLoading2(false);
           console.log("un error cachado listar pedidos");
           console.log(error);
         }
@@ -237,10 +266,6 @@ export default function Productos(props){
         setCadena(texto);
         setCad(texto);
      }
-
-
-
-
 
 
    
@@ -303,7 +328,6 @@ export default function Productos(props){
     }
 
     const goDetalles = () =>{
-
         if(registro.cb_codigo != '')
             navigation.navigate("dettotal",{registro, recargarPedidos}); 
         else
@@ -316,6 +340,7 @@ export default function Productos(props){
     }
 
      const actualizaPedido = (tpedido) =>{
+        console.log("Entro a actualizar pedidos");
         setLoading(false);
         setTpedido(tpedido);
         listarPedidos(tpedido);
@@ -332,7 +357,7 @@ export default function Productos(props){
             </View>
             {/*Search*/}
             <Text style={styles.titlespick}>Tipo:</Text>
-            <RNPickerSelect
+            {/*<RNPickerSelect
                 useNativeAndroidPickerStyle={false}
                 style={pickerStyle}
                 onValueChange={(tpedido) => actualizaPedido(tpedido)}
@@ -345,7 +370,20 @@ export default function Productos(props){
                     { label: "REACTIVADOS", value: 3 },
                     
                 ]}
-            />
+            />*/}
+            <Picker
+              onChanged={setPicker}
+              options={[
+                  {value: -1, text: 'SELECCIONAR'},
+                  {value: 0, text: 'TODOS'},
+                  {value: 1, text: 'NUEVOS'},
+                  {value: 2, text: 'BACKORDER'},
+                  {value: 4, text: 'NO APROBADOS'},
+                  {value: 3, text: 'REACTIVADOS'},
+              ]}
+              style={{borderWidth: 1, borderColor: '#a7a7a7', borderRadius: 5, marginBottom: 5, padding: 5, backgroundColor: "#6f4993", color: 'white', alignItems: 'center', marginHorizontal: 20}}
+              value={picker}
+          />
              <ScrollView horizontal>
             <View style={{ marginHorizontal:20, marginTop:10, height: 120}}>
                 <View style={{flexDirection: 'row'}}>
@@ -365,13 +403,13 @@ export default function Productos(props){
                         <Text style={styles.tabletitle}>Estado</Text>
                     </View>
                 </View>
-                {(loading && loading2) ? (<FlatList 
+                {(loading) ? (<FlatList 
                     data={data}
                     renderItem = {item}
                     keyExtractor = {(item, index)=> index.toString()}
                 />) : <ActivityIndicator
                       size="large" 
-                      loading={loading && loading2}/>} 
+                      loading={loading}/>} 
                 
             </View>
             </ScrollView>
