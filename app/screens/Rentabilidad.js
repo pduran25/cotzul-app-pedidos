@@ -12,8 +12,10 @@ export default function Rentabilidad() {
     const [cabecera, setCabecera] = useState(0);
     const [loading, setLoading] = useState(true);
     const [loading1, setLoading1] = useState(true);
+    const [loading2, setLoading2] = useState(true);
     const [data, setData] = useState([])
     const [data2, setData2] = useState([])
+    const [data3, setData3] = useState([])
     const [day1, setDay1] = useState(new Date())
     const [day2, setDay2] = useState(new Date())
 
@@ -86,6 +88,25 @@ export default function Rentabilidad() {
 
     const [tmes, setTmes] = useState(-1);
     let [picker, setPicker] = useState(0);
+
+    const CargaDataRentabilidadxCliente = async () => {
+        try {
+            setLoading2(false);
+            const response = await fetch(
+               "http://app.cotzul.com/Pedidos/getRentaxCliente.php?fechaini="+formatDate(day1)+"&fechafin="+formatDate(day2)
+             );
+             console.log("http://app.cotzul.com/Pedidos/getRentaxCliente.php?fechaini="+formatDate(day1)+"&fechafin="+formatDate(day2));
+             const jsonResponse = await response.json();
+             setData3(jsonResponse?.rentaxcliente);
+             console.log(jsonResponse?.rentaxcliente);
+             
+             setLoading2(true);
+        } catch (error) {
+            setLoading2(false)
+          console.log("un error cachado Data Cliente");
+          console.log("ERROR CACHADO " + error);
+        }
+    };
 
       //CargaRentabilidad - Rentabilidad Vendedores
     const CargaDataRentabilidadxVendedor = async () => {
@@ -169,6 +190,23 @@ export default function Rentabilidad() {
             setRes3(totA/totB);
     
             totalesFinales(datap);
+        }else if(picker == 3){
+            for (let x = 0; x < datap.length; x++) {
+                console.log("entro: "+datap[x].rc_subtotal);
+                totA = totA + Number(datap[x].rc_subtotal);
+                totB = totB + Number(datap[x].rc_totalmedesc);
+                totC = totC + Number(datap[x].rc_costoNK);
+                totD = totD + Number(datap[x].rc_utilidadK);
+    
+            }
+            setValTotA(totA);
+            setValTotB(totB);
+            setValTotC(totC);
+            setValTotD(totD);
+            setRes3((totA/totC)*100);
+            setRes4((totB/totC)*100);
+    
+            totalesFinales(datap);
         }
 
 
@@ -189,8 +227,37 @@ export default function Rentabilidad() {
             }
             setRes1(totG);
             setRes2(totH);
+        }else if(picker == 3){
+            for (let x = 0; x < datap.length; x++) {
+                totG = totG + Number((datap[x].rc_subtotal/valtotA)*100);
+                totH = totH + Number((datap[x].rc_totalmedesc/valtotD)*100);
+                totE = totE + Number((datap[x].rc_costoNK == 0)?0:(datap[x].rc_subtotal/datap[x].rc_costoNK));
+                totF = totF + Number((datap[x].rc_costoNK == 0)?0:(datap[x].rc_totalmedesc/datap[x].rc_costoNK));
+            }
+            setRes1(totG);
+            setRes2(totH);
+            setRes3(totE);
+            setRes4(totF);
         }
     }  
+
+    useEffect(() => {
+        if(picker == 3 && valtotA != 0){
+            for (let x = 0; x < data3.length; x++) {
+                totG = totG + Number((data3[x].rc_subtotal/valtotA)*100);
+                totH = totH + Number((data3[x].rc_totalmedesc/valtotD)*100);
+                totE = totE + Number((data3[x].rc_costoNK == 0)?0:(data3[x].rc_subtotal/data3[x].rc_costoNK));
+                totF = totF + Number((data3[x].rc_costoNK == 0)?0:(data3[x].rc_totalmedesc/data3[x].rc_costoNK));
+            }
+            setRes1(totG);
+            setRes2(totH);
+            setRes3(totE);
+            setRes4(totF);
+
+            console.log("se cargo :"+valtotA);
+        }
+    }, [valtotA])
+    
 
     useEffect(()=>{
         if(data != null){
@@ -206,6 +273,14 @@ export default function Rentabilidad() {
         }
         
     },[data2]);
+
+    useEffect(()=>{
+        if(data3 != null){
+            if(data3.length>0)
+            sumarTotales(data3);
+        }
+        
+    },[data3]);
 
     useEffect(() => {
         setData([]);
@@ -274,6 +349,33 @@ export default function Rentabilidad() {
                <View style={{width:70, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
                    <Text style={styles.tableval}>{Number((item.rv_subtotal/item.rv_costoNK)).toFixed(2)}</Text>
                </View>
+       </View>: (picker == 3)?  <View style={{flexDirection: 'row'}}>
+               
+               <View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}>$ {Number(item.rc_subtotal).toFixed(2)}</Text>
+               </View>
+               <View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}>$ {Number(item.rc_totalmedesc).toFixed(2)}</Text>
+               </View>
+               <View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}>$ {Number(item.rc_costoNK).toFixed(2)}</Text>
+               </View>
+               <View style={{width:70, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}>{Number((item.rc_utilidadK)).toFixed(2)}</Text>
+               </View>
+               {(valtotA != 0)?<View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}> {Number((item.rc_subtotal/valtotA)*100).toFixed(2)} %</Text>
+               </View>:<></>}
+               
+               {(valtotB != 0)? <View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}> {Number((item.rc_totalmedesc/valtotB)*100).toFixed(2)} %</Text>
+               </View>:<></>}
+               <View style={{width:100, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}> {(item.rc_costoNK != 0)? Number((item.rc_subtotal/item.rc_costoNK)).toFixed(2):(0).toFixed(2)} %</Text>
+               </View>
+               <View style={{width:70, height:35,  backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                   <Text style={styles.tableval}>{(item.rc_costoNK != 0)? Number((item.rc_totalmedesc/item.rc_costoNK)).toFixed(2):(0).toFixed(2)} %</Text>
+               </View>
        </View>:<></>}
           
                     
@@ -290,6 +392,8 @@ export default function Rentabilidad() {
                 <Text style={styles.tablevaltit2}>{item.rt_bodega} </Text>
             </View>:(picker == 2)?<View style={{width:70, height:35, backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
                 <Text style={styles.tablevaltit2}>{item.rv_tipo} </Text>
+            </View>:(picker == 3)?<View style={{width:70, height:35, backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                <Text style={styles.tablevaltit2}>{item.rc_cliente} </Text>
             </View>:<></>}
             </>
            
@@ -305,6 +409,8 @@ const item3 =({item}) =>{
                 <Text style={styles.tablevaltit}>{item.rt_mes} </Text>
             </View>:(picker == 2)?<View style={{width:100, height:35, backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
                 <Text style={styles.tablevaltit2}>{item.rv_nombvendedor} </Text>
+            </View>:(picker == 3)?<View style={{width:100, height:35, backgroundColor:'white', borderColor: 'black', borderWidth: 1}}>
+                <Text style={styles.tablevaltit2}>{item.rc_nombrecliente} </Text>
             </View>:<></>}
             </>
            
@@ -329,7 +435,7 @@ const item3 =({item}) =>{
                   {value: 0, text: 'SELECCIONA TIPO RENTABILIDAD'},
                   {value: 1, text: 'RENT. ACTUAL'},
                   {value: 2, text: 'RENT. VENDEDOR'},
-                 /* {value: 3, text: 'RENT. X MARCA'},*/
+                  {value: 3, text: 'RENT. X CLIENTE'},
               ]}
               style={{borderWidth: 1, borderColor: '#a7a7a7', borderRadius: 5, marginBottom: 5, padding: 5, backgroundColor: "#6f4993", color: 'white', alignItems: 'center', marginHorizontal: 0}}
               value={picker}
@@ -340,7 +446,7 @@ const item3 =({item}) =>{
                 <Button color={"#6f4993"} title={"Fecha Fin: "+ day2.toLocaleDateString()} onPress={showDatePicker2} />
              </View>
 
-             <Button color={"#6f4993"} title={"BUSCAR RENTABILIDAD"} onPress={(picker == 1)?CargaDataRentabilidad:(picker == 2)?CargaDataRentabilidadxVendedor:null} />
+             <Button color={"#6f4993"} title={"BUSCAR RENTABILIDAD"} onPress={(picker == 1)?CargaDataRentabilidad:(picker == 2)?CargaDataRentabilidadxVendedor:(picker == 3)?CargaDataRentabilidadxCliente:null} />
             <DateTimePickerModal
                 isVisible={isDatePickerVisible1}
                 mode="date"
@@ -411,6 +517,7 @@ const item3 =({item}) =>{
                         <View style={{width:70, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
                             <Text style={styles.tablevaltit}>% B/C</Text>
                         </View>
+
                     
             </View>
             
@@ -517,6 +624,114 @@ const item3 =({item}) =>{
                     </View>
                     <View style={{width:70, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
                         <Text style={styles.tableval}>{Number(res3).toFixed(2)}</Text>
+                    </View>
+
+                   
+          </View>
+          </View>
+          
+            </ScrollView>
+            </View> : (picker == 3) ? <View style={{flexDirection: 'row'}}>
+                <View style={{borderColor: 'black', marginRight:-20, marginLeft:20,  marginTop:10}}>
+                    <View style={{ width:70, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tablevaltit}>CODIGO</Text>
+                    </View>
+                   
+                    {loading2 ? (<FlatList 
+                    data={data3}
+                    renderItem = {item2}
+                    keyExtractor = {(item, index)=> index.toString()}
+                />) : <ActivityIndicator
+                      size="large" 
+                      loading={loading2}/>}
+                      
+                </View>
+                <View style={{borderColor: 'black', marginRight:-20, marginLeft:20,  marginTop:10}}>
+                    <View style={{ width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tablevaltit}>CLIENTE</Text>
+                    </View>
+                   
+                    {loading2 ? (<FlatList 
+                    data={data3}
+                    renderItem = {item3}
+                    keyExtractor = {(item, index)=> index.toString()}
+                />) : <ActivityIndicator
+                      size="large" 
+                      loading={loading2}/>}
+                      
+                </View>
+           
+
+            <ScrollView horizontal style={{ marginHorizontal:20, marginTop:10, marginBottom: 30}}>
+                <View>
+                <View style={{flexDirection: 'row'}}>
+                        
+                        <View style={{width:100, height:35,  backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>A(TOT - DESC)</Text>
+                        </View>
+                        <View style={{width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>B(A + SEGURO)</Text>
+                        </View>
+                        <View style={{width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>C(COST. PROM KARDEX)</Text>
+                        </View>
+                        <View style={{width:70, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>D(UTILIDAD KARDEX)</Text>
+                        </View>  
+
+                        <View style={{width:100, height:35,  backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>% A/T.A</Text>
+                        </View>
+                        <View style={{width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>% D/T.D</Text>
+                        </View>
+                        <View style={{width:100, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>% A/C</Text>
+                        </View>
+                        <View style={{width:70, height:35, backgroundColor:'yellow', borderColor: 'black', borderWidth: 1}}>
+                            <Text style={styles.tablevaltit}>% B/C</Text>
+                        </View>                
+            </View>
+            
+            {loading2 ? (<FlatList 
+                    data={data3}
+                    renderItem = {item}
+                    keyExtractor = {(item, index)=> index.toString()}
+                />) : <ActivityIndicator
+                      size="large" 
+                      loading={loading2}/>}
+
+
+
+        
+            <View style={{flexDirection: 'row'}}>
+                    
+                    <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>$ {Number(valtotA).toFixed(2)}</Text>
+                    </View>
+                    <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>$ {Number(valtotB).toFixed(2)}</Text>
+                    </View>
+                    <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>$ {Number(valtotC).toFixed(2)}</Text>
+                    </View>
+                    <View style={{width:70, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>$ {Number(valtotD).toFixed(2)}</Text>
+                    </View>
+
+                    <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>{Number(res1).toFixed(2)} %</Text>
+                    </View>
+
+                    <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>{Number(res2).toFixed(2)} %</Text>
+                    </View>
+                    <View style={{width:100, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>{Number(res3).toFixed(2)} %</Text>
+                    </View>
+
+                    <View style={{width:70, backgroundColor:'lightgrey', borderColor: 'black', borderWidth: 1}}>
+                        <Text style={styles.tableval}>{Number(res4).toFixed(2)} %</Text>
                     </View>
 
                    
