@@ -1,5 +1,5 @@
 import React,{useState, useEffect, useContext} from "react";
-import {View, Text, Image,StyleSheet, Alert} from "react-native";
+import {View, Text, Image,StyleSheet, Alert, Linking} from "react-native";
 import { Input, Icon, Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {useNavigation} from "@react-navigation/native"
@@ -8,6 +8,7 @@ import * as SQLite from 'expo-sqlite';
 import { AuthContext } from "../components/Context"
 import NetInfo from "@react-native-community/netinfo";
 import CargarInformacion from "../navegations/CargarInformacion";
+import { ScrollView } from "react-native-gesture-handler";
 
 const STORAGE_KEY = '@save_data'
 
@@ -34,6 +35,15 @@ export default function Perfil(){
         } catch(e) {
            console.log(e)
         }
+    }
+
+    async function openUrl(url){
+        const isSupported = await Linking.canOpenURL(url);
+            if(isSupported){
+                await Linking.openURL(url)
+            }else{
+                Alert.alert('No se encontro el Link');
+            }
     }
 
    useEffect(()=>{
@@ -74,7 +84,7 @@ export default function Perfil(){
 
 
     return(<>
-    
+        <ScrollView>
         <View style={styles.formContainer}>
         <Image 
             source={require("../../assets/img/imagen_perfil.jpeg")}
@@ -85,13 +95,20 @@ export default function Perfil(){
         <Text style={styles.txttipo}>{dataUser.us_nomtipoadm}</Text>
         <CargarInformacion />
         <Button
+          title="Manual de Usuario"
+          containerStyle={styles.btnContainerLogin}
+          buttonStyle={styles.btnLogin2}
+          onPress={() => openUrl("https://app.cotzul.com/Pedidos/manual/frmAprobacionPedidosA.pdf")}
+        />
+        <Button
             title="Cerrar sesión"
             containerStyle={styles.btnContainerLogin}
             buttonStyle = {styles.btnLogin}
             onPress= {onSubmit}
         />
-        <Text style={styles.txtusuario}>Version App: 1.0.2</Text>
+        <Text style={styles.txtusuario}>Version App: 1.0.3</Text>
     </View>
+    </ScrollView>
         
         </>
     );
@@ -121,6 +138,9 @@ const styles = StyleSheet.create({
     },
     btnLogin:{
         backgroundColor: "#00a680",
+    }, 
+    btnLogin2:{
+        backgroundColor: "#6f4993",
     }, 
     iconRight:{
         color : "#c1c1c1",

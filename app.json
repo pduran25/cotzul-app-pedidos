@@ -2,7 +2,7 @@
   "expo": {
     "name": "Cotzul Pedidos",
     "slug": "cotzul-apppedidos",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "jsEngine": "hermes",
@@ -27,7 +27,7 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "versionCode": 2,
+      "versionCode": 3,
       "package": "com.pedroduran25.apppedidos"
     },
     "web": {

@@ -439,12 +439,13 @@ const item3 =({item}) =>{
               ]}
               style={{borderWidth: 1, borderColor: '#a7a7a7', borderRadius: 5, marginBottom: 5, padding: 5, backgroundColor: "#6f4993", color: 'white', alignItems: 'center', marginHorizontal: 0}}
               value={picker}
-          />
+          /><Button color={"#6f4993"} title={"Fecha Ini: "+ day1.toLocaleDateString()} onPress={showDatePicker1} />
 
             <View style={styles.containerdate}>
-                <Button color={"#6f4993"} title={"Fecha Ini: "+ day1.toLocaleDateString()} onPress={showDatePicker1} />
-                <Button color={"#6f4993"} title={"Fecha Fin: "+ day2.toLocaleDateString()} onPress={showDatePicker2} />
-             </View>
+                
+            <Button color={"#6f4993"} title={"Fecha Fin: "+ day2.toLocaleDateString()} onPress={showDatePicker2} />
+            </View>
+             
 
              <Button color={"#6f4993"} title={"BUSCAR RENTABILIDAD"} onPress={(picker == 1)?CargaDataRentabilidad:(picker == 2)?CargaDataRentabilidadxVendedor:(picker == 3)?CargaDataRentabilidadxCliente:null} />
             <DateTimePickerModal
@@ -782,10 +783,17 @@ const pickerStyle = {
 
 const styles = StyleSheet.create({
     containerdate:{
-        flexDirection: 'row',
-        justifyContent: 'space-around',
+        flexDirection: 'column',
         paddingBottom: 10,
-        marginHorizontal: 0
+        marginVertical: 10,
+    },
+    buttonStyle: {
+        marginBottom: 50, // Ajusta este valor según tus necesidades
+      },
+    containerdate2:{
+        flexDirection: 'column',
+        paddingBottom: 10,
+        marginVertical: 10
     },
     container: {
         flex: 1,
